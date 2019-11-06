@@ -5,28 +5,40 @@ export const initialState = {
         id: 3892987589
       }
     ],
+    displayCompleted: true,
 };
 
 export const appReducer = (state, action) => {
     switch(action.type) {
         case "TOGGLE_TODO_ITEM":
+            return {...state,
+                data: state.data.map(todo => {
+                    if (todo.id === action.payload) {
+                        return {
+                        ...todo,
+                        completed: !todo.completed
+                        };
+                    } 
+                    else {
+                        return todo;
+                    }
+                })
+            }
+        case "ADD_NEW_TODO":
+            const newTodo = {
+                item: action.payload,
+                completed: false,
+                id: new Date()
+            }
             return {
                 ...state,
-                data: state.data.map(todo => {
-                if (todo.id === action.payload) {
-                    return {
-                    ...todo,
-                    completed: !todo.completed
-                    };
-                } else {
-                    return todo;
-                }
-                }) };
-        case "TOGGLE_COMPLETE":
-            for (let i = 0; i < state.data.length; i++) {
-            if (state.data[i].id === action.payload) { 
-                state.data[i].completed = !state.data[i].completed;}}
-        return state;
+                data: [...state.data, newTodo]
+            }
+        case "TOGGLE_DISPLAY_COMPLETED":
+            return {
+                ...state,
+                displayCompleted: !state.displayCompleted
+            }
 
         default:
             return(state);
